@@ -334,12 +334,29 @@
       </select>
       <label for="detail-text">Detail</label>
       <input id="detail-text" name="detail" type="text" maxlength="80">
-      <div class="suggestions" id="healthy-suggestions" aria-label="Healthy coping suggestions" hidden>
+      <div class="suggestions" data-suggestion-category="Stressors" aria-label="Stressors suggestions" hidden>
+        <button type="button" data-suggestion="Work pressure">Work pressure</button>
+        <button type="button" data-suggestion="Financial worries">Financial worries</button>
+        <button type="button" data-suggestion="Relationship conflict">Relationship conflict</button>
+        <button type="button" data-suggestion="Family responsibilities">Family responsibilities</button>
+        <button type="button" data-suggestion="Housing concerns">Housing concerns</button>
+        <button type="button" data-suggestion="School or study pressure">School or study pressure</button>
+      </div>
+      <div class="suggestions" data-suggestion-category="Healthy coping" aria-label="Healthy coping suggestions" hidden>
         <button type="button" data-suggestion="Meditation">Meditation</button>
         <button type="button" data-suggestion="Hobbies">Hobbies</button>
         <button type="button" data-suggestion="Exercise">Exercise</button>
         <button type="button" data-suggestion="Good eating habits">Good eating habits</button>
         <button type="button" data-suggestion="Good sleep">Good sleep</button>
+      </div>
+      <div class="suggestions" data-suggestion-category="Unhealthy coping" aria-label="Unhealthy coping suggestions" hidden>
+        <button type="button" data-suggestion="Avoiding problems">Avoiding problems</button>
+        <button type="button" data-suggestion="Withdrawing from others">Withdrawing from others</button>
+        <button type="button" data-suggestion="Poor sleep">Poor sleep</button>
+        <button type="button" data-suggestion="Alcohol or drug use">Alcohol or drug use</button>
+        <button type="button" data-suggestion="Stress eating">Stress eating</button>
+        <button type="button" data-suggestion="Excessive screen time">Excessive screen time</button>
+        <button type="button" data-suggestion="Ignoring responsibilities">Ignoring responsibilities</button>
       </div>
       <div class="dialog-actions">
         <button id="cancel-add-dialog" type="button">Cancel</button>
@@ -353,7 +370,7 @@
     const addForm = document.querySelector("#add-detail-form");
     const detailInput = document.querySelector("#detail-text");
     const categoryInput = document.querySelector("#detail-category");
-    const healthySuggestions = document.querySelector("#healthy-suggestions");
+    const suggestionGroups = [...document.querySelectorAll("[data-suggestion-category]")];
     const storageKey = "stress-bucket-coping-details";
     const categoryLabels = {
       stressors: "Stressors",
@@ -476,13 +493,22 @@
 
     function openAddDialog(category) {
       categoryInput.value = category;
-      healthySuggestions.hidden = category !== "Healthy coping";
+      updateSuggestions(category, true);
       detailInput.value = "";
-      for (const suggestion of healthySuggestions.querySelectorAll("[data-suggestion]")) {
-        suggestion.setAttribute("aria-pressed", "false");
-      }
       addDialog.showModal();
       detailInput.focus();
+    }
+
+    function updateSuggestions(category, reset = false) {
+      for (const group of suggestionGroups) {
+        const isActive = group.dataset.suggestionCategory === category;
+        group.hidden = !isActive;
+        if (reset || !isActive) {
+          for (const suggestion of group.querySelectorAll("[data-suggestion]")) {
+            suggestion.setAttribute("aria-pressed", "false");
+          }
+        }
+      }
     }
 
     for (const button of document.querySelectorAll(".category-add")) {
@@ -492,21 +518,18 @@
     }
 
     categoryInput.addEventListener("change", () => {
-      healthySuggestions.hidden = categoryInput.value !== "Healthy coping";
-      if (healthySuggestions.hidden) {
-        for (const suggestion of healthySuggestions.querySelectorAll("[data-suggestion]")) {
-          suggestion.setAttribute("aria-pressed", "false");
-        }
-      }
+      updateSuggestions(categoryInput.value);
     });
 
-    healthySuggestions.addEventListener("click", (event) => {
-      const suggestion = event.target.closest("[data-suggestion]");
-      if (suggestion) {
-        const selected = suggestion.getAttribute("aria-pressed") !== "true";
-        suggestion.setAttribute("aria-pressed", String(selected));
-      }
-    });
+    for (const group of suggestionGroups) {
+      group.addEventListener("click", (event) => {
+        const suggestion = event.target.closest("[data-suggestion]");
+        if (suggestion) {
+          const selected = suggestion.getAttribute("aria-pressed") !== "true";
+          suggestion.setAttribute("aria-pressed", String(selected));
+        }
+      });
+    }
 
     document.querySelector("#cancel-add-dialog").addEventListener("click", () => {
       addDialog.close();
@@ -516,8 +539,11 @@
       event.preventDefault();
       const category = categoryInput.value;
       const detail = detailInput.value.trim();
-      const suggestions = category === "Healthy coping"
-        ? [...healthySuggestions.querySelectorAll('[data-suggestion][aria-pressed="true"]')]
+      const selectedSuggestions = suggestionGroups.find(
+        (group) => group.dataset.suggestionCategory === category
+      );
+      const suggestions = selectedSuggestions
+        ? [...selectedSuggestions.querySelectorAll('[data-suggestion][aria-pressed="true"]')]
           .map((suggestion) => suggestion.dataset.suggestion)
         : [];
       const details = [...new Set([detail, ...suggestions].filter(Boolean))];
