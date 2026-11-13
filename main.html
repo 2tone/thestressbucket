@@ -40,6 +40,66 @@
       box-sizing: border-box;
     }
 
+    .panel-toggle {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 2.75rem;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid rgb(143 216 255 / 45%);
+      border-radius: 0.45rem;
+      background: rgb(76 174 255 / 14%);
+      color: #dceaff;
+      font: inherit;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .panel-toggle svg {
+      flex: 0 0 auto;
+      width: 1rem;
+      height: 1rem;
+      transition: transform 120ms ease;
+    }
+
+    .panel-toggle[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    .coping-content {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+      .coping-panel {
+        inset: 0.75rem auto auto 0.75rem;
+        width: min(20rem, calc(100vw - 1.5rem));
+        height: auto;
+        max-height: calc(100vh - 1.5rem);
+        max-height: calc(100dvh - 1.5rem);
+        padding: 0.65rem;
+      }
+
+      .panel-toggle {
+        display: flex;
+      }
+
+      .coping-panel:not([data-expanded="true"]) .coping-content {
+        display: none;
+      }
+
+      .coping-panel[data-expanded="true"] {
+        height: min(75vh, 38rem);
+        height: min(75dvh, 38rem);
+      }
+    }
+
     .coping-panel table {
       width: 100%;
       border-collapse: collapse;
@@ -295,32 +355,38 @@
   </style>
 </head>
 <body>
-  <aside class="coping-panel" aria-label="Coping categories">
-    <div class="coping-list">
-      <table>
-        <tbody>
-        <tr data-category="stressors"><th scope="row"><div class="category-heading"><span>Stressors</span><button class="category-add" type="button" data-add-category="Stressors" aria-label="Add stressor"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg><span>Add detail</span></button></div></th></tr>
-        <tr data-category="stressors"><td>Work issues</td></tr>
-        <tr data-category="stressors"><td>Money worries</td></tr>
-        <tr data-category="stressors"><td>Housing</td></tr>
-        <tr data-category="stressors"><td>Family stress</td></tr>
-        <tr data-category="stressors"><td>Health concerns</td></tr>
-        <tr data-category="healthy"><th scope="row"><div class="category-heading"><span>Healthy coping</span><button class="category-add" type="button" data-add-category="Healthy coping" aria-label="Add healthy coping detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg><span>Add detail</span></button></div></th></tr>
-        <tr data-category="unhealthy"><th scope="row"><div class="category-heading"><span>Unhealthy coping</span><button class="category-add" type="button" data-add-category="Unhealthy coping" aria-label="Add unhealthy coping detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg><span>Add detail</span></button></div></th></tr>
-        <tr data-category="unhealthy"><td>Isolation</td></tr>
-        <tr data-category="unhealthy"><td>Bad sleep</td></tr>
-        <tr data-category="unhealthy"><td>Alcohol and/or drugs</td></tr>
-        <tr data-category="unhealthy"><td>Stress eating</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="panel-actions">
-      <button id="reset-view" type="button" aria-label="Reset view">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M12 5V2L7.5 6.5 12 11V8a6 6 0 1 1-5.65 8h-2.1A8 8 0 1 0 12 5Z"/>
-        </svg>
-        <span>Reset view</span>
-      </button>
+  <aside class="coping-panel" aria-label="Coping categories" data-expanded="true">
+    <button class="panel-toggle" id="toggle-coping-panel" type="button" aria-expanded="true" aria-controls="coping-panel-content">
+      <span>Coping details</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m7.4 9.2 4.6 4.6 4.6-4.6 1.4 1.4-6 6-6-6 1.4-1.4Z"/></svg>
+    </button>
+    <div class="coping-content" id="coping-panel-content">
+      <div class="coping-list">
+        <table>
+          <tbody>
+          <tr data-category="stressors"><th scope="row"><div class="category-heading"><span>Stressors</span><button class="category-add" type="button" data-add-category="Stressors" aria-label="Add stressor"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg><span>Add detail</span></button></div></th></tr>
+          <tr data-category="stressors"><td>Work issues</td></tr>
+          <tr data-category="stressors"><td>Money worries</td></tr>
+          <tr data-category="stressors"><td>Housing</td></tr>
+          <tr data-category="stressors"><td>Family stress</td></tr>
+          <tr data-category="stressors"><td>Health concerns</td></tr>
+          <tr data-category="healthy"><th scope="row"><div class="category-heading"><span>Healthy coping</span><button class="category-add" type="button" data-add-category="Healthy coping" aria-label="Add healthy coping detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg><span>Add detail</span></button></div></th></tr>
+          <tr data-category="unhealthy"><th scope="row"><div class="category-heading"><span>Unhealthy coping</span><button class="category-add" type="button" data-add-category="Unhealthy coping" aria-label="Add unhealthy coping detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg><span>Add detail</span></button></div></th></tr>
+          <tr data-category="unhealthy"><td>Isolation</td></tr>
+          <tr data-category="unhealthy"><td>Bad sleep</td></tr>
+          <tr data-category="unhealthy"><td>Alcohol and/or drugs</td></tr>
+          <tr data-category="unhealthy"><td>Stress eating</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-actions">
+        <button id="reset-view" type="button" aria-label="Reset view">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 5V2L7.5 6.5 12 11V8a6 6 0 1 1-5.65 8h-2.1A8 8 0 1 0 12 5Z"/>
+          </svg>
+          <span>Reset view</span>
+        </button>
+      </div>
     </div>
   </aside>
   <dialog class="add-dialog" id="add-dialog" aria-labelledby="add-dialog-title">
@@ -371,6 +437,9 @@
     const detailInput = document.querySelector("#detail-text");
     const categoryInput = document.querySelector("#detail-category");
     const suggestionGroups = [...document.querySelectorAll("[data-suggestion-category]")];
+    const copingPanel = document.querySelector(".coping-panel");
+    const panelToggle = document.querySelector("#toggle-coping-panel");
+    const mobilePanelQuery = window.matchMedia("(max-width: 600px)");
     const storageKey = "stress-bucket-coping-details";
     const categoryLabels = {
       stressors: "Stressors",
@@ -490,6 +559,21 @@
     }
 
     renderDetails(loadDetails());
+
+    function setPanelExpanded(expanded) {
+      const shouldExpand = mobilePanelQuery.matches ? expanded : true;
+      copingPanel.dataset.expanded = String(shouldExpand);
+      panelToggle.setAttribute("aria-expanded", String(shouldExpand));
+    }
+
+    panelToggle.addEventListener("click", () => {
+      setPanelExpanded(panelToggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    mobilePanelQuery.addEventListener("change", (event) => {
+      setPanelExpanded(!event.matches);
+    });
+    setPanelExpanded(!mobilePanelQuery.matches);
 
     function openAddDialog(category) {
       categoryInput.value = category;
