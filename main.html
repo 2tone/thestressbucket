@@ -356,6 +356,73 @@
       border-color: #4caeff;
       background: #1768a6;
     }
+
+    .info-button {
+      position: fixed;
+      z-index: 2;
+      right: 1rem;
+      bottom: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      border: 1px solid rgb(143 216 255 / 55%);
+      border-radius: 50%;
+      background: #1768a6;
+      color: #eef4fc;
+      box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 35%);
+      cursor: pointer;
+    }
+
+    .info-button svg {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+
+    .info-button:focus-visible {
+      outline: 2px solid #8fd8ff;
+      outline-offset: 3px;
+    }
+
+    .info-dialog {
+      width: min(34rem, calc(100vw - 2rem));
+      max-height: calc(100vh - 2rem);
+      max-height: calc(100dvh - 2rem);
+      overflow-y: auto;
+      padding: 1.25rem;
+      border: 1px solid rgb(190 210 235 / 22%);
+      border-radius: 0.75rem;
+      background: #141923;
+      color: #eef4fc;
+      box-shadow: 0 1rem 3rem rgb(0 0 0 / 45%);
+    }
+
+    .info-dialog::backdrop {
+      background: rgb(0 0 0 / 55%);
+    }
+
+    .info-dialog h2 {
+      margin: 0 0 1rem;
+      font-size: 1.2rem;
+    }
+
+    .info-dialog section + section {
+      margin-top: 1rem;
+    }
+
+    .info-dialog h3 {
+      margin: 0 0 0.35rem;
+      color: #dceaff;
+      font-size: 1rem;
+    }
+
+    .info-dialog p {
+      margin: 0;
+      color: #c4cfde;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -393,6 +460,29 @@
       </div>
     </div>
   </aside>
+  <button class="info-button" id="info-button" type="button" aria-label="About the stress bucket" title="About the stress bucket">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 4.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM14 17h-4v-1.5h1.25v-4H10V10h3v5.5h1V17Z"/>
+    </svg>
+  </button>
+  <dialog class="info-dialog" id="info-dialog" aria-labelledby="info-dialog-title">
+    <h2 id="info-dialog-title">About the stress bucket</h2>
+    <section>
+      <h3>Stressors (Filling the Bucket)</h3>
+      <p>Everyday pressures—like work issues, money worries, housing concerns, and family stress are unavoidable. They constantly pour into your bucket. If too much builds up without a release, the bucket overflows, leading to overwhelm and burnout.</p>
+    </section>
+    <section>
+      <h3>Unhealthy Coping (Recycling the Pressure)</h3>
+      <p>Habits like isolation, poor sleep, stress eating, or using alcohol and drugs might feel like quick relief. However, they work like a tap that simply returns the water right back into the bucket, meaning the stress never actually leaves.</p>
+    </section>
+    <section>
+      <h3>Healthy Coping (Draining the Bucket)</h3>
+      <p>Positive habits—like exercise, hobbies, good sleep, balanced eating, and taking prescribed medication act as a release valve at the bottom of the bucket. They safely drain the stress away, freeing up space so you can handle whatever life brings next.</p>
+    </section>
+    <form method="dialog" class="dialog-actions">
+      <button type="submit">Close</button>
+    </form>
+  </dialog>
   <dialog class="add-dialog" id="add-dialog" aria-labelledby="add-dialog-title">
     <form id="add-detail-form">
       <h2 id="add-dialog-title">Add a detail</h2>
@@ -437,6 +527,7 @@
   <script>
     const tableBody = document.querySelector(".coping-panel tbody");
     const addDialog = document.querySelector("#add-dialog");
+    const infoDialog = document.querySelector("#info-dialog");
     const addForm = document.querySelector("#add-detail-form");
     const detailInput = document.querySelector("#detail-text");
     const categoryInput = document.querySelector("#detail-category");
@@ -563,6 +654,10 @@
     }
 
     renderDetails(loadDetails());
+
+    document.querySelector("#info-button").addEventListener("click", () => {
+      infoDialog.showModal();
+    });
 
     function setPanelExpanded(expanded) {
       const shouldExpand = mobilePanelQuery.matches ? expanded : true;
